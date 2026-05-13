@@ -1,7 +1,5 @@
 const baseUrl = window.location.origin;
 
-// elad the king
-
 // ==========================================
 // ENVIRONMENT TOGGLE
 // Set to 'true' to use mock data, 'false' to connect to your real server
