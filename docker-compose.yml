@@ -1,0 +1,24 @@
+services:
+  music-app:
+    build: .
+    container_name: music_player
+    ports:
+      - "8000:8000"
+    volumes:
+      # Change the left side to the full path
+      - "/home/raglaim/obsidian-data/music:/app/music_files"
+      - "./library.db:/app/library.db"
+      - "./main.py:/app/main.py"
+      - "./static:/app/static"
+    restart: unless-stopped
+
+  ngrok:
+    image: ngrok/ngrok:latest
+    restart: unless-stopped
+    command:
+      - "http"
+      - "music-app:8000"
+    environment:
+      - NGROK_AUTHTOKEN=3CFXE7qc15a9GxJWZhgwX6CMIp5_6ZF4gbsb8iZS2Jx6V8t9X
+    depends_on:
+      - music-app

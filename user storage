@@ -1,0 +1,17 @@
+import sqlite3
+
+# Connect to the main library database
+conn = sqlite3.connect("library.db")
+cursor = conn.cursor()
+
+# Create the schema without the trailing comma
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE,
+    hashed_password TEXT
+)
+''')
+
+conn.commit()
+print("Users table created successfully!")

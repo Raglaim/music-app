@@ -1,0 +1,408 @@
+/* ----- Fonts ----- */
+@import url('https://fonts.googleapis.com/css2?family=Assistant:wght@200..800&family=IBM+Plex+Sans+Hebrew:wght@100;200;300;400;500;600;700&display=swap');
+body {
+  /* font-family: "IBM Plex Sans Hebrew", sans-serif; */
+  font-family: "Assistant", sans-serif;
+  overflow: hidden;
+  touch-action: none;
+}
+:root {
+/* ----- Colors ----- */
+  --body-color-lightmode: #e8e8e8;
+  --body-color-barkmode: #212121;
+  --text-color-1: #e7e2d3;
+  --text-color-2: #cfcfcd;
+  --text-color-3: #87ceeb;
+}
+
+.screen {
+  width: 100%;
+  height:100vh;
+  transition: opacity 0.5s ease-in-out;
+  opacity: 1;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+/* ----- Auth Screen ----- */
+.auth-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.auth-screen::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); 
+  z-index: -1; 
+}
+/* ----- Background Video ----- */
+.auth-screen .bg-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+  filter: blur(16px); 
+  transform: scale(1.1);
+}
+
+/* ----- Auth Container ----- */
+.auth-screen .auth-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 50px;
+  border-radius: 50px;
+  background-color: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.09);
+}
+
+.auth-screen .auth-container header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.auth-screen .auth-container header .app-logo {
+  width: 100px;
+}
+.auth-screen .auth-container header .app-name {
+  font-size: 36px; 
+  font-weight: 700; 
+  color: var(--text-color-1);
+}
+.auth-screen .auth-container header .welcome {
+  font-size: 28px; 
+  font-weight: 500; 
+  margin-top: 25px; 
+  color: var(--text-color-2);
+}
+.auth-screen .auth-container header .instarctions {
+  font-size: 16px; 
+  font-weight: 400; 
+  color: var(--text-color-2);
+}
+
+.auth-screen .auth-container .input-container {
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.auth-screen .auth-container .input-container .input {
+  color: white;
+  font-size: 16px;
+  background-color: rgb(175, 175, 175, 0.5);
+  box-shadow: 3px 3px 3px rgba(140, 140, 140, 0.5), 0 0 0 2px transparent;
+  border-radius: 3px;
+  border: none;
+  outline: none;
+  padding: 10px 20px;
+  margin: 5px;
+  transition: .4s;
+}
+.auth-screen .auth-container .input-container .input::placeholder {
+  color: whitesmoke;
+}
+.auth-screen .auth-container .input-container .input:focus {
+  box-shadow: 0 0 0 .15vw #87ceeb;
+}
+
+.auth-screen .auth-container button {
+  margin-top: 15px;
+  padding: 12px 40px;
+  border-radius: 10px;
+  border: 0;
+  background-color: rgb(100, 100, 100);
+  letter-spacing: 1.5px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  box-shadow: rgb(100, 100, 100) 0px 10px 0px 0px;
+  color: var(--text-color-1);
+  cursor: pointer;
+}
+.auth-screen .auth-container button:active {
+  background-color: skyblue;
+  box-shadow: skyblue 0px 0px 0px 0px;
+  transform: translateY(5px);
+  transition: 100ms;
+}
+
+.auth-screen .auth-container .error-message {
+  margin-top: 20px;
+}
+
+/* ----- Music Screen ----- */
+.app-screen {
+  height: 100vh;
+  background-color: var(--body-color-barkmode);
+  color: var(--body-color-lightmode);
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: 1fr auto;
+  grid-template-areas: 
+  "sidebar main"
+  "footer footer";
+}
+
+/* ----- Sidebar ----- */
+.app-screen .sidebar {
+  grid-area: sidebar;
+  box-sizing: border-box;
+  width: 300px;
+  padding: 10px;
+  background-color: #191919;
+  border-right: 1px solid #cfcfcd;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* ----- Sidebar - Top ----- */
+.app-screen .sidebar .top-nav-container {
+  display: flex;
+  flex-direction: row;
+  padding: 5px;
+}
+.app-screen .sidebar .top-nav-container .history-controls {
+  display: flex;
+}
+.app-screen .sidebar .top-nav-container .space {
+  flex-grow: 1;
+}
+.icon-btn {
+  cursor: pointer;
+  border-radius: 10px;
+  width: 40px;
+  height: 40px;
+  background-color: #ffffff00;
+  border: none;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.icon-btn:hover {
+  background-color: #87cfeb82;
+}
+.profile .icon-btn:hover {
+  background-color: #c839399a;
+}
+.icon-btn:active {
+  background-color: #87cfeb98;
+  box-shadow: #87cfeb98 0px 0px 0px 0px;
+  transform: translateY(2px);
+  transition: 100ms;
+}
+.icon-btn {
+  margin: 3px;
+  background-color: #ffffff20;
+}
+.icon-btn div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ----- Sidebar - Main ----- */
+.app-screen .sidebar .sidebar-section {
+  display: flex;
+  flex-direction: column;
+}
+/* ----- Sidebar - Main - Header ----- */
+.app-screen .sidebar .sidebar-section .section-header-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 12px;
+  font-size: 22px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 10px;
+  z-index: 1;
+}
+.app-screen .sidebar .sidebar-section .section-header-row:hover {
+  background-color: #87cfeb66;
+}
+.app-screen .sidebar .sidebar-section .section-header-row:active {
+  background-color: #87cfeb82;
+  box-shadow: #87cfeb82 0px 0px 0px 0px;
+  transform: translateY(2px);
+  transition: 100ms;
+}
+.app-screen .sidebar .sidebar-section .section-header-row .row-title {
+  flex-grow: 1;
+  margin-left: 5px;
+}
+.app-screen .sidebar .sidebar-section .section-header-row .section-actions {
+  display: flex;
+  flex-direction: row;
+}
+/* ----- Sidebar - Main - Library ----- */
+.app-screen .sidebar .sidebar-section .drop-down-menu {
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+  padding-bottom: 10px;
+
+  max-height: 400px;
+  overflow: hidden;
+  opacity: 1;
+  transition: max-height 0.4s ease-in-out, opacity 0.3s ease-in-out;
+}
+.app-screen .sidebar .sidebar-section .drop-down-menu .menu-item {
+  width: auto;
+  display: flex;
+  flex-direction: row;
+  flex-grow: auto 1;
+  align-items: center;
+  padding: 12px;
+  font-size: 20px;
+  font-weight: 500;
+  background-color: #ffffff00;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #e8e8e8;
+  z-index: 1;
+  transition: 350ms;
+}
+.app-screen .sidebar .sidebar-section .drop-down-menu .menu-item:hover {
+  background-color: #87cfeb66;
+}
+.app-screen .sidebar .sidebar-section .drop-down-menu .menu-item:active {
+  background-color: #87cfeb82;
+  box-shadow: #87cfeb82 0px 0px 0px 0px;
+  transform: translateY(2px);
+  transition: 100ms;
+}
+.app-screen .sidebar .sidebar-section .drop-down-menu .menu-item svg {
+  border-radius: 5px;
+  width: 30px;
+  height: 30px;
+  padding: 3px;
+  background-color: #ffffff20;
+}
+.app-screen .sidebar .sidebar-section .drop-down-menu .menu-item span {
+  margin-left: 5px;
+}
+
+/* ----- Sidebar - Main - Prifle ----- */
+.app-screen .sidebar .sidebar-section.profile {
+  display: flex;
+  flex-direction: row;
+}
+.app-screen .sidebar .sidebar-section.profile .space {
+  flex-grow: 1;
+}
+
+
+
+/* --- Dropdown Collapsing --- */
+.collapsed {
+  max-height: 0 !important;
+  opacity: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  pointer-events: none;
+}
+
+/* --- Arrow Animation --- */
+.arrow-icon {
+  transition: transform 0.3s ease;
+}
+.arrow-icon.rotated {
+  transform: rotate(180deg);
+}
+
+/* --- Sidebar Mini Mode --- */
+.sidebar {
+  transition: width 0.3s ease;
+}
+.sidebar.mini {
+  width: 90px; 
+}
+/* Hide all text and action buttons when sidebar is mini */
+.sidebar.mini .row-title,
+.sidebar.mini .sidebar-section .arrow-icon,
+.sidebar.mini .section-actions,
+.sidebar.mini .menu-item span,
+.sidebar.mini .profile span,
+.sidebar.mini .top-nav-container .history-controls {
+  display: none;
+}
+.sidebar.mini .library .drop-down-menu {
+  margin-left: 0;
+}
+/* Center the remaining icons neatly */
+.sidebar.mini .section-header-row,
+.sidebar.mini .menu-item {
+  justify-content: center;
+  padding: 12px 0;
+}
+.sidebar.mini .drop-down-menu {
+  margin-left: 0;
+}
+
+/* ----- Footer ----- */
+.app-screen .player-bar {
+  grid-area: footer;
+  border-top: 1px solid rgba(255, 255, 255);
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: #131313;
+}
+.app-screen .player-bar .player-left {
+  display: flex;
+  flex-direction: row;
+}
+.app-screen .player-bar .player-left .song-info {
+  display: flex;
+  flex-direction: column;
+}
+.app-screen .player-bar .player-center {
+  display: flex;
+  flex-direction: row;
+}
+.app-screen .player-bar .player-center .controls-container {
+  display: flex;
+  flex-direction: row;
+}
+.app-screen .player-bar .player-right {
+  display: flex;
+  flex-direction: row;
+}
+
+
+/* ----- Main ----- */
+.app-screen .content-area {
+  grid-area: main;
+  overflow-y: auto;
+  padding: 20px;
+}
