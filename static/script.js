@@ -188,7 +188,8 @@ async function fetchSongs() {
             // 2. Update their content with the clicked song's data
             playerTitle.innerText = song.title;
             playerArtist.innerText = song.artist;
-            playerImage.src = `${baseUrl}${song.thumbnail_path}`;
+            const cleanFileName = song.thumbnail_path.split('/').pop();
+            playerImage.src = `${baseUrl}/thumbnails/${cleanFileName}`;
             playerImage.style.borderRadius = "5px";
 
             audioPlayer.src = `${baseUrl}/stream/${song.id}`;
@@ -351,5 +352,3 @@ document.addEventListener("DOMContentLoaded", () => {
         audioPlayer.currentTime = progressBar.value;
     });
 });
-
-    

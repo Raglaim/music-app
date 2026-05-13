@@ -106,26 +106,15 @@ def stream_song(song_id: int):
     song = cursor.fetchone()
     conn.close()
 
-    if song is None:
-        raise HTTPException(status_code=404, detail="Song not found in database")
-    
-    # Get the raw path from the database
-    raw_path = song["path"]
-    
-    # Use absolute path to avoid any "relative directory" confusion
-    file_path = os.path.abspath(raw_path)
+    if not song:
+        raise HTTPException(status_code=404, detail="Song not found")
 
-    # Check if the file exists. If not, we print the exact path to your terminal
-    if not os.path.exists(file_path):
-        print(f"\n--- FILE NOT FOUND ERROR ---")
-        print(f"ID: {song_id}")
-        print(f"Path in DB: {raw_path}")
-        print(f"Absolute Path checked: {file_path}")
-        print(f"-----------------------------\n")
-        raise HTTPException(status_code=404, detail="File missing on server disk")
-    
-    # FileResponse handles the streaming
-    return FileResponse(file_path, media_type="audio/mpeg")
+    # Rewrite the host machine path to the Docker volume path
+    # DB has: /home/raglaim/obsidian-data/music/...
+    # Docker needs: /app/music_files/...
+    file_path = song["path"].replace("/home/raglaim/obsidian-data/music", "/app/music_files")
+
+    return FileResponse(file_path)
 
 # --- MOUNTING ---
 # Ensure thumbnails are mounted BEFORE the root static files

@@ -10,6 +10,7 @@ services:
       - "./library.db:/app/library.db"
       - "./main.py:/app/main.py"
       - "./static:/app/static"
+      - "./thumbnails:/app/thumbnails"
     restart: unless-stopped
 
   ngrok:
