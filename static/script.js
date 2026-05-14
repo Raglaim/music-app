@@ -94,6 +94,7 @@ async function fetchSongs() {
         // --- MOCK DATA ---
         console.log("Dev Mode: Loading mock songs...");
         songs = [
+            { id: 1, title: "עיר נמר", artist: "אייל גולן" },
             { id: 1, title: "Dev Song 1", artist: "Coder" },
             { id: 2, title: "Dev Song 2", artist: "The Debuggers" },
             { id: 3, title: "Coffee & Code", artist: "Lo-Fi Beats" },
@@ -172,7 +173,7 @@ async function fetchSongs() {
         songDiv.style.margin = "5px 20px";
         songDiv.style.cursor = "pointer";
         songDiv.style.borderBottom = "1px solid rgba(255,255,255,0.1)";
-        
+            
         songDiv.innerText = `${song.title} - ${song.artist}`;
         
         songDiv.onclick = () => {
@@ -183,14 +184,22 @@ async function fetchSongs() {
             // 1. Grab the elements in the bottom left
             const playerTitle = document.querySelector(".player-left .title");
             const playerArtist = document.querySelector(".player-left .artist");
+            const playerSongInfo = document.querySelector(".player-left .song-info");
             const playerImage = document.querySelector(".player-left img");
 
             // 2. Update their content with the clicked song's data
             playerTitle.innerText = song.title;
             playerArtist.innerText = song.artist;
-            const cleanFileName = song.thumbnail_path.split('/').pop();
-            playerImage.src = `${baseUrl}/thumbnails/${cleanFileName}`;
-            playerImage.style.borderRadius = "5px";
+            if (!DEV_MODE) {
+                const cleanFileName = song.thumbnail_path.split('/').pop();
+                playerImage.src = `${baseUrl}/thumbnails/${cleanFileName}`;
+                playerImage.style.width = "75px";
+                playerImage.style.height = "75px";
+                playerImage.style.borderRadius = "5px";
+            }
+
+            if (containsHebrew(song.title)) {playerTitle.style.textAlign = "right";}
+            if (containsHebrew(song.artist)) {playerArtist.style.textAlign = "right";}
 
             audioPlayer.src = `${baseUrl}/stream/${song.id}`;
             audioPlayer.play().catch(e => {
@@ -352,3 +361,13 @@ document.addEventListener("DOMContentLoaded", () => {
         audioPlayer.currentTime = progressBar.value;
     });
 });
+
+// Checks if there is at least one Hebrew character
+function containsHebrew(str) {
+  return /[\u0590-\u05FF]/.test(str);
+}
+
+// Checks if there is at least one English letter
+function containsEnglish(str) {
+  return /[a-zA-Z]/.test(str);
+}

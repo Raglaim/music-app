@@ -2,5 +2,6 @@ fastapi
 uvicorn[standard]
 mutagen
 passlib[bcrypt]
+bcrypt<4.0.0
 python-jose[cryptography]
 python-multipart

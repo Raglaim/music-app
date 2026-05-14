@@ -7,7 +7,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 def create_user():
     print("=== Create New User Account ===")
     username = input("Enter new username: ")
-    password = input("Enter temporary password: ")
+    password = input("Enter password: ")
     
     # Scramble the password
     hashed_password = pwd_context.hash(password)
