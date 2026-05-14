@@ -17,7 +17,7 @@
                     <img class="app-logo" src="media/logo.png" alt="N-Player logo">
                     <span class="app-name">N-Player</span>
                     <span class="welcome">welcome to N-PLayer</span>
-                    <span class="instarctions">Please Log in to access the music</span>
+                    <span class="instructions">Please Log in to access the music</span>
                 </header>
 
                 <div class="input-container">
@@ -133,14 +133,9 @@
                 2.    Center: Playback controls (Play/Pause, Skip, Progress Bar).
                 3.    Right: Volume, Shuffle/Repeat, and Queue toggles. -->
                 <audio id="audio-player"></audio>
+
+                <!-- Left -->
                 <div class="player-left">
-                    <img src="" alt="">
-                    <div class="song-info">
-                        <span class="title"></span>
-                        <span class="artist"></span>
-                    </div>
-                </div>
-                <div class="player-center">
                     <div class="controls-container">
                         <button class="icon-btn shuffle">
                             <div class="shuffle-off">
@@ -179,9 +174,34 @@
                         <span id="total-time">0:00</span>
                     </div>
                 </div>
+
+                <!-- Center -->
+                <div class="player-center">
+                    <button class="icon-btn more-options">
+
+                    </button>
+                    <div class="song-info">
+                        <span class="title"></span>
+                        <span class="artist"></span>
+                    </div>
+                    <img src="" alt="">
+                </div>
+
+                <!-- Right -->
                 <div class="player-right">
                     <div class="volume-container">
-                        <input type="range">
+                        <button class="icon-btn mute-btn">
+                            <div class="volume-down">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-360v-240h160l200-200v640L360-360H200Zm440 40v-322q45 21 72.5 65t27.5 97q0 53-27.5 96T640-320ZM480-606l-86 86H280v80h114l86 86v-252ZM380-480Z"/></svg>
+                            </div>
+                            <div class="volume-up" style="display: none;">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M560-131v-82q90-26 145-100t55-168q0-94-55-168T560-749v-82q124 28 202 125.5T840-481q0 127-78 224.5T560-131ZM120-360v-240h160l200-200v640L280-360H120Zm440 40v-322q47 22 73.5 66t26.5 96q0 51-26.5 94.5T560-320ZM400-606l-86 86H200v80h114l86 86v-252ZM300-480Z"/></svg>
+                            </div>
+                            <div class="muted" style="display: none;">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m616-320-56-56 104-104-104-104 56-56 104 104 104-104 56 56-104 104 104 104-56 56-104-104-104 104Zm-496-40v-240h160l200-200v640L280-360H120Zm280-246-86 86H200v80h114l86 86v-252ZM300-480Z"/></svg>
+                            </div>
+                        </button>
+                        <input id="volume-slider" type="range" min="0" max="1" step="0.01" value="1">
                     </div>
                     <button class="icon-btn queue-toggle">
                         <div class="arrow-icon">

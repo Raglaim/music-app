@@ -181,11 +181,11 @@ async function fetchSongs() {
             const audioPlayer = document.getElementById("audio-player");
             
             // --- NEW: Update the Player UI ---
-            // 1. Grab the elements in the bottom left
-            const playerTitle = document.querySelector(".player-left .title");
-            const playerArtist = document.querySelector(".player-left .artist");
-            const playerSongInfo = document.querySelector(".player-left .song-info");
-            const playerImage = document.querySelector(".player-left img");
+            // 1. Grab the elements in the bottom
+            const playerTitle = document.querySelector(".player-center .title");
+            const playerArtist = document.querySelector(".player-center .artist");
+            const playerSongInfo = document.querySelector(".player-center .song-info");
+            const playerImage = document.querySelector(".player-center img");
 
             // 2. Update their content with the clicked song's data
             playerTitle.innerText = song.title;
@@ -319,55 +319,122 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // ==========================================
+    // HELPER: FILL SLIDER PROGRESS
+    // ==========================================
+    // This updates the background gradient of any range slider to show "progress"
+    function updateSliderBackground(slider) {
+        // Prevent division by zero if max is not set yet
+        const max = slider.max ? parseFloat(slider.max) : 1; 
+        const percentage = (slider.value / max) * 100;
+        slider.style.background = `linear-gradient(to right, #87ceeb ${percentage}%, #e8e8e8 ${percentage}%)`;
+    }
+
+    // ==========================================
     // PROGRESS BAR & TIMERS
     // ==========================================
-    
-    // Select the elements from your HTML
     const progressBar = document.querySelector(".progress-bar input[type='range']");
     const currentTimeText = document.getElementById("current-time");
     const totalTimeText = document.getElementById("total-time");
 
-    // Helper function to format seconds into M:SS
     function formatTime(seconds) {
         if (isNaN(seconds)) return "0:00";
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = Math.floor(seconds % 60);
-        // Adds a leading zero if seconds are less than 10
         return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
     }
 
-    // 1. When a new song loads, set the total time and max value of the slider
     audioPlayer.addEventListener("loadedmetadata", () => {
         const duration = audioPlayer.duration;
         totalTimeText.innerText = formatTime(duration);
-        
-        // Set the slider's maximum value to the song's total seconds
-        progressBar.max = Math.floor(duration);
-        progressBar.value = 0; // Reset slider to the start
+        progressBar.max = duration;
+        progressBar.value = 0;
+        updateSliderBackground(progressBar); // Update UI
     });
 
-    // 2. As the song plays, update the current time text and slider position
     audioPlayer.addEventListener("timeupdate", () => {
         const current = audioPlayer.currentTime;
         currentTimeText.innerText = formatTime(current);
-        
-        // Only update the slider if the user isn't actively dragging it
-        // (We don't want it jumping around while they hold it)
-        progressBar.value = Math.floor(current);
+        progressBar.value = current;
+        updateSliderBackground(progressBar); // Update UI as song plays
     });
 
-    // 3. Let the user drag the slider to seek to a new part of the song
     progressBar.addEventListener("input", () => {
         audioPlayer.currentTime = progressBar.value;
+        updateSliderBackground(progressBar); // Update UI as user drags
+    });
+
+    // ==========================================
+    // VOLUME CONTROL & MUTE LOGIC
+    // ==========================================
+    const volumeSlider = document.getElementById("volume-slider");
+    const muteBtn = document.querySelector(".mute-btn");
+    
+    // Select the icons
+    const volUpIcon = document.querySelector(".volume-up");
+    const volDownIcon = document.querySelector(".volume-down");
+    const mutedIcon = document.querySelector(".muted");
+
+    let previousVolume = 1; // Remember volume before muting
+
+    // Function to handle showing the correct icon based on volume level
+    function updateVolumeIcons(vol) {
+        volUpIcon.style.display = "none";
+        volDownIcon.style.display = "none";
+        mutedIcon.style.display = "none";
+
+        if (vol === 0) {
+            mutedIcon.style.display = "block";
+        } else if (vol <= 0.5) { // 0 to 50%
+            volDownIcon.style.display = "block";
+        } else { // 51% to 100%
+            volUpIcon.style.display = "block";
+        }
+    }
+
+    // 1. Initial Setup on Page Load
+    audioPlayer.volume = volumeSlider.value;
+    updateSliderBackground(volumeSlider);
+    updateVolumeIcons(parseFloat(volumeSlider.value));
+
+    // 2. When the user moves the slider
+    volumeSlider.addEventListener("input", (event) => {
+        const currentVol = parseFloat(event.target.value);
+        audioPlayer.volume = currentVol;
+        
+        if (currentVol > 0) {
+            previousVolume = currentVol; // Save for unmuting later
+        }
+
+        updateSliderBackground(volumeSlider);
+        updateVolumeIcons(currentVol);
+    });
+
+    // 3. When the user clicks the Mute Icon button
+    muteBtn.addEventListener("click", () => {
+        if (audioPlayer.volume > 0) {
+            // Mute the audio
+            audioPlayer.volume = 0;
+            volumeSlider.value = 0;
+        } else {
+            // Unmute the audio (restore to previous volume)
+            // If they dragged to 0 manually and clicked unmute, give them a default of 0.5
+            const restoreVol = previousVolume > 0 ? previousVolume : 0.5;
+            audioPlayer.volume = restoreVol;
+            volumeSlider.value = restoreVol;
+        }
+        
+        // Update the UI
+        updateSliderBackground(volumeSlider);
+        updateVolumeIcons(audioPlayer.volume);
     });
 });
 
 // Checks if there is at least one Hebrew character
 function containsHebrew(str) {
-  return /[\u0590-\u05FF]/.test(str);
+    return /[\u0590-\u05FF]/.test(str);
 }
 
 // Checks if there is at least one English letter
 function containsEnglish(str) {
-  return /[a-zA-Z]/.test(str);
+    return /[a-zA-Z]/.test(str);
 }
