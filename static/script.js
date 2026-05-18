@@ -12,6 +12,7 @@ window.onload = () => {
     if (token) {
         showMusicPlayer();
         fetchSongs();
+        fetchSettings();
     }
 };
 
@@ -53,6 +54,7 @@ async function login() {
                 localStorage.setItem("access_token", data.access_token);
                 showMusicPlayer();
                 fetchSongs();
+                fetchSettings();
             } else {
                 errorText.innerText = "Incorrect username or password.";
             }
@@ -213,6 +215,34 @@ async function fetchSongs() {
         
         libraryDiv.appendChild(songDiv);
     });
+}
+
+async function fetchSettings() {
+    if (DEV_MODE) return; // Skip backend call if in mock data mode
+
+    const token = localStorage.getItem("access_token");
+    if (!token) return;
+
+    try {
+        const response = await fetch(`${baseUrl}/settings`, {
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            const volumeSlider = document.getElementById("volume-slider");
+            
+            // Set the slider to the saved volume from the database
+            volumeSlider.value = data.volume;
+            
+            // Dispatching an 'input' event forces your existing slider logic
+            // to run automatically. This updates the audio player, the progress gradient,
+            // and the volume icons without you having to write duplicate code!
+            volumeSlider.dispatchEvent(new Event('input'));
+        }
+    } catch (error) {
+        console.error("Failed to fetch settings:", error);
+    }
 }
 
 // ==========================================
@@ -407,6 +437,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
         updateSliderBackground(volumeSlider);
         updateVolumeIcons(currentVol);
+    });
+    // Save to database when the user releases the slider
+    volumeSlider.addEventListener("change", async (event) => {
+        if (DEV_MODE) return; // Don't save if in mock mode
+
+        const currentVol = parseFloat(event.target.value);
+        const token = localStorage.getItem("access_token");
+
+        if (token) {
+            try {
+                await fetch(`${baseUrl}/settings`, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ volume: currentVol })
+                });
+                console.log("Volume saved successfully!");
+            } catch (error) {
+                console.error("Failed to save volume to database:", error);
+            }
+        }
     });
 
     // 3. When the user clicks the Mute Icon button

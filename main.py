@@ -1,15 +1,13 @@
 import sqlite3
 from datetime import datetime, timedelta
-
+from pydantic import BaseModel
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-
 from passlib.context import CryptContext
 from jose import jwt, JWTError
-
 import os
 import urllib.parse
 
@@ -115,6 +113,34 @@ def stream_song(song_id: int):
     file_path = song["path"].replace("/home/raglaim/obsidian-data/music", "/app/music_files")
 
     return FileResponse(file_path)
+
+# --- SETTINGS MODEL ---
+class SettingsUpdate(BaseModel):
+    volume: float
+
+# --- ENDPOINT: Get Settings ---
+@app.get("/settings")
+def get_settings(current_user: str = Depends(get_current_user)):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT volume FROM users WHERE username = ?", (current_user,))
+    user = cursor.fetchone()
+    conn.close()
+    
+    # If the user is new or volume is somehow null, default to 1.0 (100%)
+    vol = user["volume"] if user and user["volume"] is not None else 1.0
+    return {"volume": vol}
+
+# --- ENDPOINT: Update Settings ---
+@app.post("/settings")
+def update_settings(settings: SettingsUpdate, current_user: str = Depends(get_current_user)):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    # Save the new volume to the database for this specific user
+    cursor.execute("UPDATE users SET volume = ? WHERE username = ?", (settings.volume, current_user))
+    conn.commit()
+    conn.close()
+    return {"status": "success"}
 
 # --- MOUNTING ---
 # Ensure thumbnails are mounted BEFORE the root static files

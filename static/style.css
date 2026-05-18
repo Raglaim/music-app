@@ -419,6 +419,11 @@ body {
   flex-direction: row;
   align-items: center;
 }
+.app-screen .player-bar .player-right .volume-container .icon-btn div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .app-screen .player-bar .player-left .progress-bar input,
 .app-screen .player-bar .player-right .volume-container input {
   -webkit-appearance: none;
